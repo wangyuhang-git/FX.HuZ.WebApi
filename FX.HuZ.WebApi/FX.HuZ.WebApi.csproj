@@ -176,6 +176,7 @@
     <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\DustNewReceiveController.cs" />
     <Compile Include="Controllers\DustReceiveController.cs" />
+    <Compile Include="Controllers\EnterpriseApp\UserLoginController.cs" />
     <Compile Include="Controllers\EPDustController.cs" />
     <Compile Include="Controllers\ProjectInfoController.cs" />
     <Compile Include="Controllers\RealNameReceiveController.cs" />
@@ -230,6 +231,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\UserLogin\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
