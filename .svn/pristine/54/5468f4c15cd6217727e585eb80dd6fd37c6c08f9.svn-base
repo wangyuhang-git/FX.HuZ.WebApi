@@ -1,0 +1,128 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using FX.HuZ.WebApi.Business;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+namespace FX.HuZ.WebApi.Controllers
+{
+    /// <summary>
+    /// 扬尘数据接收接口
+    /// </summary>
+    public class DustReceiveController : ApiController
+    {
+        #region 方式一
+        /// <summary>
+        /// HttpClient方式掉用
+        /// </summary>
+        /// <param name="jobject"></param>
+        [HttpPost]
+        public IHttpActionResult Post([FromBody]JObject jobject)
+        {
+            string message = "接收数据成功";
+            dynamic entity = jobject;
+            try
+            {
+                Helper.SaveLog("cmp接收:" + JsonConvert.SerializeObject(entity));
+                if (entity != null)
+                {
+                    string sign = entity.sign;
+                    string address = entity.address;
+                    string longitude = entity.longitude;
+                    string latitude = entity.latitude;
+                    string devName = entity.devName;
+                    string deviceId = entity.deviceId;
+                    string prodcutId = entity.prodcutId;
+                    string appId = entity.appId;
+                    string deveui = entity.deveui;
+                    string uploadTime = entity.uploadTime;
+                    string payload = entity.payload;
+                }
+            }
+            catch (Exception ex)
+            {
+                message = "接收数据失败：" + ex.Message;
+                Helper.SaveLog("cmp接收异常:" + ex.Message);
+            }
+            if (!string.IsNullOrEmpty(message))
+            {
+                var result = new
+                {
+                    result = "02",
+                    resultmsg = message
+                };
+                return Json(result);
+            }
+            else
+            {
+                var result = new
+                {
+                    result = "01",
+                    resultmsg = message
+                };
+                return Json(result);
+            }
+        }
+        #endregion
+
+
+        #region 方式二
+        /*
+        /// <summary>
+        /// HttpWebRequest方式调用
+        /// </summary>
+        /// <param name="entity"></param>
+        [HttpPost]
+        public IHttpActionResult Post(dynamic entity)
+        {
+            string message = "接收数据成功";
+            try
+            {
+                Helper.SaveLog("cmp接收:" + JsonConvert.SerializeObject(entity));
+                if (entity != null)
+                {
+                    string sign = entity.sign;
+                    string address = entity.address;
+                    string longitude = entity.longitude;
+                    string latitude = entity.latitude;
+                    string devName = entity.devName;
+                    string deviceId = entity.deviceId;
+                    string prodcutId = entity.prodcutId;
+                    string appId = entity.appId;
+                    string deveui = entity.deveui;
+                    string uploadTime = entity.uploadTime;
+                    string payload = entity.payload;
+                }
+            }
+            catch (Exception ex)
+            {
+                message = "接收数据失败：" + ex.Message;
+                Helper.SaveLog("cmp接收异常:" + ex.Message);
+            }
+            if (!string.IsNullOrEmpty(message))
+            {
+                var result = new
+                {
+                    result = "02",
+                    resultmsg = message
+                };
+                return Json(result);
+            }
+            else
+            {
+                var result = new
+                {
+                    result = "01",
+                    resultmsg = message
+                };
+                return Json(result);
+            }
+        }
+        */
+        #endregion
+    }
+}

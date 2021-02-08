@@ -1,0 +1,58 @@
+﻿using FX.HuZ.WebApi.Business;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+
+namespace FX.HuZ.WebApi.Controllers
+{
+    /// <summary>
+    /// 接收DMP平台推送的塔吊黑匣子数据接口
+    /// </summary>
+    public class TowerCraneReceiveController : ApiController
+    {
+        [HttpPost]
+        public void Post([FromBody]JObject value)
+        {
+            if (null == value)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            Helper.SaveLog("TowerCraneReceive:" + JsonConvert.SerializeObject(value), "TowerCraneReceive");
+            try
+            {
+                dynamic entity = value;
+                if (null != entity)
+                {
+                    FX.HuZ.WebApi.Models.TowerCrane.iot_sys_raw iot_sys_raw = JsonConvert.DeserializeObject<FX.HuZ.WebApi.Models.TowerCrane.iot_sys_raw>(Convert.ToString(entity.iot_sys_raw));
+
+                    FX.HuZ.WebApi.Models.TowerCrane.data data = iot_sys_raw.data;
+                    FX.HuZ.WebApi.Models.TowerCrane.@params paramsStr = data.paramsValue;
+
+
+
+                    //SetData();
+                }
+            }
+            catch (Exception ex)
+            {
+                Helper.SaveLog("接收塔吊黑匣子数据异常:" + ex.Message, "TowerCraneReceive");
+            }
+        }
+        #region 保存数据
+        /// <summary>
+        /// 保存DMP平台推送过来的黑匣子数据
+        /// </summary>
+        /// <param name="entity"></param>
+        private void SetData(dynamic entity)
+        {
+
+        }
+        #endregion
+    }
+}

@@ -1,0 +1,62 @@
+﻿using FX.FP.Busines.NewDAL;
+using FX.HuZ.WebApi.Business;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+
+namespace FX.HuZ.WebApi.Controllers
+{
+    /// <summary>
+    /// 接收DMP（新）平台推送扬尘数据接口
+    /// </summary>
+    public class DustNewReceiveController : ApiController
+    {
+        protected Common_Dal comdal = new Common_Dal();
+        #region 方式一
+        /// <summary>
+        /// HttpClient方式掉用
+        /// </summary>
+        /// <param name="jobject"></param>
+        [HttpPost]
+        public IHttpActionResult Post([FromBody]JObject jobject)
+        {
+            string message = "DustNewDmp接收数据成功";
+            dynamic entity = jobject;
+            try
+            {
+                Helper.SaveLog("DustNewDmp接收:" + JsonConvert.SerializeObject(entity), "DustNewReceive全部");
+                
+            }
+            catch (Exception ex)
+            {
+                message = "DustNewDmp接收数据失败：" + ex.Message;
+                Helper.SaveLog("DustNewDmp接收异常:" + ex.Message, "DustNewReceive");
+            }
+            if (!string.IsNullOrEmpty(message))
+            {
+                var result = new
+                {
+                    result = "02",
+                    resultmsg = message
+                };
+                return Json(result);
+            }
+            else
+            {
+                var result = new
+                {
+                    result = "01",
+                    resultmsg = message
+                };
+                return Json(result);
+            }
+        }
+        #endregion
+
+    }
+}

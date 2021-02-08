@@ -1,0 +1,89 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using FX.HuZ.WebApi.Business;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+namespace FX.HuZ.WebApi.Controllers
+{
+    /// <summary>
+    /// 扬尘数据接收接口
+    /// </summary>
+    public class DustReceiveController : ApiController
+    {
+        #region 方式一
+        /// <summary>
+        /// HttpClient方式掉用
+        /// </summary>
+        /// <param name="jobject"></param>
+        [HttpPost]
+        public void Post([FromBody]JObject jobject)
+        {
+            dynamic entity = jobject;
+            try
+            {
+                Helper.SaveLog("cmp接收:" + JsonConvert.SerializeObject(entity));
+                if (entity != null)
+                {
+                    string sign = entity.sign;
+                    string address = entity.address;
+                    string longitude = entity.longitude;
+                    string latitude = entity.latitude;
+                    string devName = entity.devName;
+                    string deviceId = entity.deviceId;
+                    string prodcutId = entity.prodcutId;
+                    string appId = entity.appId;
+                    string deveui = entity.deveui;
+                    string uploadTime = entity.uploadTime;
+                    string payload = entity.payload;
+                }
+            }
+            catch (Exception ex)
+            {
+                Helper.SaveLog("cmp接收异常:" + ex.Message);
+            }
+
+        }
+        #endregion
+
+
+        #region 方式二
+        /*
+        /// <summary>
+        /// HttpWebRequest方式调用
+        /// </summary>
+        /// <param name="entity"></param>
+        [HttpPost]
+        public void Post(dynamic entity)
+        {
+            try
+            {
+                Helper.SaveLog("cmp接收:" + JsonConvert.SerializeObject(entity));
+                if (entity != null)
+                {
+                    string sign = entity.sign;
+                    string address = entity.address;
+                    string longitude = entity.longitude;
+                    string latitude = entity.latitude;
+                    string devName = entity.devName;
+                    string deviceId = entity.deviceId;
+                    string prodcutId = entity.prodcutId;
+                    string appId = entity.appId;
+                    string deveui = entity.deveui;
+                    string uploadTime = entity.uploadTime;
+                    string payload = entity.payload;
+                }
+            }
+            catch (Exception ex)
+            {
+                Helper.SaveLog("cmp接收异常:" + ex.Message);
+            }
+        }
+        */
+        #endregion
+    }
+}

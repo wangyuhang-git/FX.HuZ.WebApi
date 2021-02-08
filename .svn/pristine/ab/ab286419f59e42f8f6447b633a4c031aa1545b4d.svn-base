@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace FX.HuZ.WebApi.Models
+{
+    public class DataBaseModel
+    {
+        public string address { get; set; }
+
+        public string payload { get; set; }
+
+        public string latitude { get; set; }
+
+        public string appId { get; set; }
+
+        public string sign { get; set; }
+
+        public string uploadTime { get; set; }
+
+        public string devName { get; set; }
+
+        public string deviceId { get; set; }
+
+        public string prodcutId { get; set; }
+
+        public string longitude { get; set; }
+
+        public string deveui { get; set; }
+    }
+}

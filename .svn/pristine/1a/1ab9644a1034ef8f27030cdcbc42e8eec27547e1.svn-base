@@ -1,0 +1,317 @@
+﻿using FX.FP.Busines.NewDAL;
+using FX.FP.Common.DotNetCode;
+using FX.FP.Common.DotNetExt;
+using FX.HuZ.WebApi.Business;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Web.Http;
+
+namespace FX.HuZ.WebApi.Controllers
+{
+    /// <summary>
+    /// 接收DMP平台推送的实名制数据接口
+    /// </summary>
+    public class RealNameReceiveController : ApiController
+    {
+        protected Common_Dal comdal = new Common_Dal("SqlServer_FP_DB_SMZ");
+        [HttpPost]
+        public IHttpActionResult Post([FromBody]JObject value)
+        {
+            //Helper.SaveLog("RealNameReceive:" + JsonConvert.SerializeObject(value), "RealNameReceive");
+            Hashtable ht = new Hashtable();
+            try
+            {
+                dynamic entity = value;
+                if (null != entity)
+                {
+                    /*
+                    JObject raw = entity.iot_sys_raw;
+                    var rawModel = raw.ToObject<FX.HuZ.WebApi.Models.RealName.iot_sys_raw>();
+                    if (null != rawModel)
+                    {
+                        FX.HuZ.WebApi.Models.RealName.data data = rawModel.data;
+                        FX.HuZ.WebApi.Models.RealName.@params paramsStr = data.paramsValue;
+                        //SetData(paramsStr);
+                    }
+                    */
+
+                    FX.HuZ.WebApi.Models.RealName.iot_sys_raw iot_sys_raw = JsonConvert.DeserializeObject<FX.HuZ.WebApi.Models.RealName.iot_sys_raw>(Convert.ToString(entity.iot_sys_raw));
+                    if (null != iot_sys_raw)
+                    {
+                        FX.HuZ.WebApi.Models.RealName.data data = iot_sys_raw.data;
+                        FX.HuZ.WebApi.Models.RealName.@params paramsStr = data.paramsValue;
+                        SetData(paramsStr);
+                    }
+                    var result = new
+                    {
+                        code = "01",
+                        msg = "调用接口成功"
+                    };
+                    return Json(result);
+                }
+                else
+                {
+                    var result = new
+                    {
+                        code = "03",
+                        msg = "调用接口失败，原因：获取参数为空！"
+                    };
+                    return Json(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                Helper.SaveLog("接收实名制考勤数据异常:" + ex.Message, "RealNameReceive");
+                var result = new
+                {
+                    code = "02",
+                    msg = "调用接口失败，原因：" + ex.Message + ex.StackTrace
+                };
+                return Json(result);
+            }
+        }
+
+        #region 保存数据
+        /// <summary>
+        /// 保存DMP平台推送实名制考勤数据
+        /// </summary>
+        /// <param name="params"></param>
+        private void SetData(FX.HuZ.WebApi.Models.RealName.@params @params)
+        {
+            string syncData = @params.syncData;
+            string guid = Guid.NewGuid().ToString2();
+            //if (@params.ProjectGUID == "a29c8ca2-aec0-44b3-820e-e44da159aca3")
+            //{
+            //    Helper.SaveLog("@params.syncData:" + syncData, "RealNameReceive");
+            //}
+            //Helper.SaveLog("@请求id:" + guid + "开始时间：" + DateTime.Now, "RealNameReceiveTime");
+            var list = JsonConvert.DeserializeObject<List<FX.HuZ.WebApi.Models.RealName.T_AttendanceInfo>>(Convert.ToString(syncData));
+            var dtAtt = comdal.GetDataTablePrimaryNameBySQL(new StringBuilder(" SELECT * FROM dbo.T_AttendanceData WHERE 1=2 "));
+            if (null != list && list.Count > 0)
+            {
+                try
+                {
+                    //Helper.SaveLog("@请求id:" + guid + "list.Count：" + list.Count, "RealNameReceiveTime");
+                    Helper.SaveLog("@项目ID:" + @params.ProjectGUID + "，list.Count：" + list.Count, "RealNameReceiveTime");
+                    DataRow dr = null;
+                    foreach (Models.RealName.T_AttendanceInfo item in list)
+                    {
+                        /* Hashtable ht = new Hashtable();
+                         ht["GUID"] = Guid.NewGuid().ToString();
+                         ht["KeyID"] = item.KEYID;
+                         string personGuid = this.GetPersonGUID(item.PERSONKEYID);
+                         ht["PersonGUID"] = string.IsNullOrEmpty(personGuid) ? item.PERSONKEYID : personGuid;
+                         ht["ProjectGUID"] = @params.ProjectGUID;
+                         ht["AttendanceTime"] = item.ATTENDANCETIME;
+                         ht["AttendanceDoorType"] = item.ATTENDANCEDOORTYPE;
+                         ht["ImageBuffer"] = item.IMAGEBUFFER;
+                         ht["CreateTime"] = System.DateTime.Now;
+                         bool returnValue = comdal.SubmitData("T_AttendanceInfo", "GUID", "", ht);
+                         if (returnValue)
+                         {
+                             //Helper.SaveLog("写入实名制考勤数据成功，人员GUID：" + item.PERSONKEYID + "项目GUID：" + @params.ProjectGUID, "RealNameReceive");
+                             OpAttInfo(ht["GUID"].ToString(), @params.ProjectGUID);
+                         }
+                         else
+                         {
+                             Helper.SaveLog("写入实名制考勤数据失败，人员GUID：" + item.PERSONKEYID + "项目GUID：" + @params.ProjectGUID, "RealNameReceive");
+                         }*/
+                        dr = dtAtt.NewRow();
+                        dr["GUID"] = Guid.NewGuid().ToString();
+                        dr["KeyID"] = item.KEYID;
+                        string personGuid = this.GetPersonGUID(item.PERSONKEYID, @params.ProjectGUID);
+                        dr["PersonGUID"] = string.IsNullOrEmpty(personGuid) ? item.PERSONKEYID : personGuid;
+                        dr["ProjectGUID"] = @params.ProjectGUID;
+                        dr["AttendanceTime"] = item.ATTENDANCETIME;
+                        dr["AttendanceDoorType"] = item.ATTENDANCEDOORTYPE;
+                        dr["ImageBuffer"] = item.IMAGEBUFFER;
+                        dr["CreateTime"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                        dtAtt.Rows.Add(dr);
+                    }
+                    dtAtt.TableName = "T_AttendanceData";//新的记录数据表，考勤数据全部存储
+                    bool flag = comdal.SqlBulkCopyImport(dtAtt);
+
+                    if (!flag)
+                    {
+                        //OpAttInfo(dtAtt, @params.ProjectGUID);
+                        Helper.SaveLog("批量写入实名制考勤数据失败，项目ID：" + @params.ProjectGUID, "RealNameReceive");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Helper.SaveLog("写入实名制考勤数据失败，原因：" + ex.Message + ",syncData：" + syncData, "RealNameReceive");
+                    throw new ApplicationException(ex.Message);
+                }
+            }
+            else
+            {
+                Helper.SaveLog("写入实名制考勤数据失败，原因：未获取到详细的考勤信息，请检查传输的参数", "RealNameReceive");
+                throw new ApplicationException("未获取到详细的考勤信息参数，请检查传输的参数");
+            }
+            //Helper.SaveLog("@请求id:" + guid + "结束时间：" + DateTime.Now, "RealNameReceiveTime");
+        }
+        #endregion
+
+        private string GetPersonGUID(string keyID, string projectGuid)
+        {
+            string personGuid = string.Empty;
+            DataTable dt = comdal.GetDataTableBySQL(new StringBuilder(string.Format(@"SELECT * FROM T_PERSONINFO WHERE KEYID='{0}' AND PROJECTGUID='{1}'", keyID, projectGuid)));
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                personGuid = Convert.ToString(dt.Rows[0]["GUID"]);
+            }
+            return personGuid;
+        }
+
+
+        #region 考勤信息
+        public void OpAttInfo(DataTable dt, string projectGuid)
+        {
+            try
+            {
+                /* string projectCode = "";
+                 string strSQL = string.Format(@" SELECT * FROM dbo.WholeCountry_BuinessProject WHERE PROJECTGUID='{0}' ", projectGuid);
+                 DataTable dtProject = comdal.GetDataTableBySQL(new StringBuilder(strSQL));
+                 if (dtProject != null && dtProject.Rows.Count > 0)
+                 {
+                     projectCode = dtProject.Rows[0]["projectCode"].ToString2();
+                 }
+                 else
+                 {
+                     return;
+                 }
+
+                 var param = new SqlParam[] { new SqlParam("@AttGUID", AttGUID) };
+                 StringBuilder sql = new StringBuilder(@"select a.guid attguid,p.guid projectguid,pe.IDCard IDCardNumber,w.GUID workerguid,pt.guid ProjectTeamGUID,
+                 '01' IDCardType,a.AttendanceTime date,CASE A.AttendanceDoorType WHEN '进门' THEN '01' WHEN '出门' THEN '02' ELSE '' end direction ,A.ImageBuffer image FROM T_AttendanceInfo a
+                  inner join T_Project p on a.ProjectGUID=p.GUID 
+                  INNER JOIN T_PersonInfo Pe ON a.PersonGUID = pe.GUID
+                  INNER JOIN dbo.T_Worker W ON W.PersonGUID = Pe.GUID 
+                  INNER JOIN dbo.T_ProjectTeam pt on pt.GUID = W.ProjectTeamGUID
+                  WHERE ISNULL(a.ispush,0)=0 and a.guid=@attguid");
+                 DataTable dt = comdal.GetDataTableBySQL(sql, param);
+                 Hashtable ht = new Hashtable();
+                 if (null != dt && dt.Rows.Count > 0)
+                 {
+                     SyncPlatformCommon syncPlatformCommon = new SyncPlatformCommon();
+                     string teamSysNo = syncPlatformCommon.getTeamNo("WholeCountry_BuinessProjectTeam", "ProjectTeamGUID", Convert.ToString(dt.Rows[0]["ProjectTeamGUID"]), "teamSysNo");
+
+
+                     //var sbBase = new StringBuilder("select * from dbo.WholeCountry_BuinessAttendance where  AttGUID=@AttGUID");
+                     //DataTable dtBase = comdal.GetDataTableBySQL(sbBase, param);
+                     //string guid = string.Empty;
+                     //if (dtBase != null && dtBase.Rows.Count > 0)
+                     //{
+                     //    guid = dtBase.Rows[0]["guid"].ToString();
+                     //}
+
+
+                     string table = "WholeCountry_BuinessAttendance";
+                     int isAlreadySync = 0;
+                     int syncState = 1;
+                     string businessGUID = syncPlatformCommon.getBusinessGUID(table, "AttGUID", AttGUID, out isAlreadySync, out syncState);
+                     if (string.IsNullOrEmpty(businessGUID))
+                     {
+                         ht.Add("GUID", Guid.NewGuid().ToString());
+                     }
+                     else
+                     {
+                         ht.Add("GUID", businessGUID);
+                     }
+                     ht["ProjectGUID"] = dt.Rows[0]["ProjectGUID"];
+
+                     ht["AttGUID"] = dt.Rows[0]["AttGUID"];
+                     ht["ProjectTeamGUID"] = dt.Rows[0]["ProjectTeamGUID"];
+                     ht["WorkerGUID"] = dt.Rows[0]["WorkerGUID"];
+                     ht["AttGUID"] = dt.Rows[0]["AttGUID"];
+                     ht["IDCardType"] = dt.Rows[0]["IDCardType"];
+                     ht["IDCardNumber"] = dt.Rows[0]["IDCardNumber"];
+                     ht["date"] = dt.Rows[0]["date"].DateTimeParse("yyyy-MM-dd HH:mm:ss");
+                     ht["direction"] = dt.Rows[0]["direction"];
+                     ht["image"] = dt.Rows[0]["image"];
+
+                     ht["teamSysNo"] = teamSysNo;
+
+                     ht["projectCode"] = projectCode;
+
+                     //ht["syncState"] = "0";
+                     ht["state"] = "0";
+                     ht.Add("syncState", 1);
+                     ht.Add("syncDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                     ht.Add("isAlreadySync", isAlreadySync);
+                     ht.Add("isPrepositionSync", syncPlatformCommon.getIsPrepositionSync("WholeCountry_BuinessProjectWorker", "WorkerGUID", Convert.ToString(dt.Rows[0]["WorkerGUID"])));
+
+                     var returnValue = comdal.SubmitData(table, "GUID", businessGUID, ht);
+
+                     //if (returnValue)
+                     //{
+                     //    string strSql = string.Format(@" Update T_AttendanceInfo set ispush=1 where guid='{0}'", pkguid);
+                     //
+                     //    int num = comdal.ExecuteBySql(new StringBuilder(strSql));
+                     //    var exqMsg = string.Format("反写数据{0},条数：{1}", (num > 0 ? "成功" : "失败"), num);
+                     //    Helper.SaveLog(exqMsg, "推送全国平台考勤信息");
+                     //} 
+                 }
+                 */
+                string projectCode = "";
+                string strSQL = string.Format(@" SELECT projectCode FROM dbo.WholeCountry_BuinessProject WHERE PROJECTGUID='{0}' ", projectGuid);
+                DataTable dtProject = comdal.GetDataTableBySQL(new StringBuilder(strSQL));
+                if (dtProject != null && dtProject.Rows.Count > 0)
+                {
+                    projectCode = dtProject.Rows[0]["projectCode"].ToString2();
+                }
+                else
+                {
+                    return;
+                }
+                if (dt.Rows.Count < 1)
+                {
+                    return;
+                }
+                string strSql = string.Format(@"select cast(newid() as varchar(36)) GUID,p.GUID ProjectGUID,pt.GUID ProjectTeamGUID,
+w.GUID WorkerGUID,ai.GUID AttGUID,'{1}' projectCode,(SELECT TOP 1 teamSysNo FROM dbo.WholeCountry_BuinessProjectTeam WHERE ProjectTeamGUID=pt.GUID) teamSysNo,w.IDCardType IDCardType,w.IDCardNumber IDCardNumber,CONVERT(varchar, ai.AttendanceTime, 120 ) date,
+case when ai.AttendanceDoorType='出门' then '02' else '01' end direction,ai.Direction attendType,0 state,1 syncState,'' syncMsg,GETDATE() syncDate,(SELECT isAlreadySync FROM WholeCountry_BuinessAttendance where AttGUID=ai.GUID) isAlreadySync,
+CASE (SELECT TOP 1 isAlreadySync FROM WholeCountry_BuinessProjectWorker WHERE WorkerGUID=w.GUID ) WHEN 1 THEN 1 ELSE 0 END isPrepositionSync,0 isSync,0 isDelete
+FROM T_Project p inner join T_CompanyProject cp on p.GUID=cp.ProjectGUID and p.GUID='{0}'
+inner join T_Company c on cp.CompanyGUID=c.GUID inner join T_ProjectTeam pt on p.GUID=pt.ProjectGUID and cp.GUID=pt.CompanyGUID
+inner join T_Worker w on w.ProjectGUID=p.GUID and w.CompanyGUID=cp.GUID and w.ProjectTeamGUID=pt.GUID
+inner join T_AttendanceInfo ai on w.PersonGUID=ai.PersonGUID and w.ProjectGUID =ai.ProjectGUID where ai.GUID in (", projectGuid, projectCode);
+                //string strSql1 = string.Format(@" Update T_AttendanceInfo set ispush=1 where guid in ( ");
+                foreach (DataRow dr in dt.Rows)
+                {
+                    strSql += "'" + dr["GUID"].ToString() + "',";
+                    //strSql1 += "'" + dr["GUID"].ToString() + "',";
+                }
+                strSql = strSql.Substring(0, strSql.Length - 1);
+                //strSql1 = strSql.Substring(0, strSql1.Length - 1);
+                strSql += ")";
+                //strSql1 += ")";
+                var dtOpATT = comdal.GetDataTablePrimaryNameBySQL(new StringBuilder(strSql));
+                dtOpATT.TableName = "WholeCountry_BuinessAttendance";
+                bool returnValue = comdal.SqlBulkCopyImport(dtOpATT);
+                if (returnValue)
+                {
+                    //Helper.SaveLog("批量写入全国平台考勤信息WholeCountry_BuinessAttendance成功，项目id:" + projectGuid, "RealNameReceive");
+                    //int num = comdal.ExecuteBySql(new StringBuilder(strSql1));
+                }
+                else
+                {
+                    Helper.SaveLog("批量写入全国平台考勤信息WholeCountry_BuinessAttendance失败，项目id:" + projectGuid, "RealNameReceive");
+                }
+            }
+            catch (Exception ex)
+            {
+                Helper.SaveLog("推送全国平台考勤信息失败,原因：" + ex.Message, "RealNameReceive");
+            }
+        }
+        #endregion
+    }
+}

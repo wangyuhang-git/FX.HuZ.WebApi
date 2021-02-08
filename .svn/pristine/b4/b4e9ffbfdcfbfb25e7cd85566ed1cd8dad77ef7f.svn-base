@@ -1,0 +1,24 @@
+﻿using FX.HuZ.WebApi.Business;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+
+namespace FX.HuZ.WebApi.Controllers
+{
+    /// <summary>
+    /// 接收DMP平台推送的考勤数据接口
+    /// </summary>
+    public class AttendanceReceiveController : ApiController
+    {
+        // POST api/<controller>
+        public void Post([FromBody]JObject value)
+        {
+            Helper.SaveLog("AttendanceReceive接收:" + JsonConvert.SerializeObject(value), "AttendanceReceive");
+        }
+    }
+}
