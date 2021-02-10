@@ -1,0 +1,47 @@
+﻿using FX.HuZ.WebApi.Business.EnterpriseApp;
+using FX.HuZ.WebApi.Common;
+using FX.HuZ.WebApi.Models;
+using FX.HuZ.WebApi.Models.Enum;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+
+namespace FX.HuZ.WebApi.Controllers.EnterpriseApp
+{
+    public class ProjectController : ApiController
+    {
+        // GET api/<controller>
+        public IEnumerable<string> Get()
+        {
+            return new string[] { "value1", "value2" };
+        }
+
+
+        // POST api/<controller>
+        [HttpPost]
+        public IHttpActionResult Post([FromBody] Object value)
+        {
+            ResultMsg resultMsg = new ResultMsg();
+            if (null != value)
+            {
+                ProjectEpBusiness userInfoEpBusiness = new ProjectEpBusiness();
+                dynamic @object = value;
+                string accountType = @object.accountType;
+                string organizationCode = @object.organizationCode;
+                resultMsg.StatusCode = (int)StatusCodeEnum.Success;
+                resultMsg.Info = StatusCodeEnum.Success.GetEnumText();
+                resultMsg.Data = userInfoEpBusiness.GetProjectTable(accountType, organizationCode);
+            }
+            else
+            {
+                resultMsg.StatusCode = (int)StatusCodeEnum.ParameterError;
+                resultMsg.Info = StatusCodeEnum.ParameterError.GetEnumText();
+            }
+            return Json(resultMsg);
+        }
+
+    }
+}

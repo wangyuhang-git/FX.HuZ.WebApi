@@ -174,7 +174,6 @@
     <Compile Include="Common\HttpResponseExtension.cs" />
     <Compile Include="Common\SignExtension.cs" />
     <Compile Include="Common\WebSettingsConfig.cs" />
-    <Compile Include="Common\WhereHelper.cs" />
     <Compile Include="Controllers\AttendanceReceiveController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\DustNewReceiveController.cs" />
@@ -202,14 +201,11 @@
     <Compile Include="Models\Dust\LoadDataModel.cs" />
     <Compile Include="Models\Dust\NodeListDataModel.cs" />
     <Compile Include="Models\Dust\NodeNewModel.cs" />
-    <Compile Include="Models\EnterpriseApp\ProjectList.cs" />
     <Compile Include="Models\Enum\StatusCodeEnum.cs" />
-    <Compile Include="Models\PageModel.cs" />
     <Compile Include="Models\RealName\dada.cs" />
     <Compile Include="Models\RealName\Entity\T_AttendanceInfo.cs" />
     <Compile Include="Models\RealName\iot_sys_raw.cs" />
     <Compile Include="Models\RealName\params.cs" />
-    <Compile Include="Models\ResultModel.cs" />
     <Compile Include="Models\ResultMsg.cs" />
     <Compile Include="Models\Token.cs" />
     <Compile Include="Models\TowerCrane\data.cs" />
@@ -238,6 +234,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\EnterpriseApp\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Views\UserLogin\" />
   </ItemGroup>

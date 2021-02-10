@@ -307,4 +307,3 @@ E:\ProjectSourceCode\湖州市质安监系统WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi\
 E:\ProjectSourceCode\湖州市质安监系统WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi\obj\Debug\FX.HuZ.WebApi.csproj.CopyComplete
 E:\ProjectSourceCode\湖州市质安监系统WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi\obj\Debug\FX.HuZ.WebApi.dll
 E:\ProjectSourceCode\湖州市质安监系统WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi\obj\Debug\FX.HuZ.WebApi.pdb
-E:\ProjectSourceCode\湖州市质安监系统WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi\obj\Debug\FX.HuZ.WebApi.csprojAssemblyReference.cache
