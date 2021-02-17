@@ -212,8 +212,8 @@ E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi.Test\bin\Microsoft.AspNet.FriendlyUrls.xml
 E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi.Test\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi.Test\bin\zh-Hans\System.Web.Optimization.resources.dll
 E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi.Test\bin\zh-Hans\Microsoft.AspNet.FriendlyUrls.resources.dll
-E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi.Test\obj\Debug\FX.HuZ.WebApi.Test.csprojAssemblyReference.cache
 E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi.Test\obj\Debug\FX.HuZ.WebApi.Test.csproj.CoreCompileInputs.cache
 E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi.Test\obj\Debug\FX.HuZ.WebApi.Test.csproj.CopyComplete
 E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi.Test\obj\Debug\FX.HuZ.WebApi.Test.dll
 E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi.Test\obj\Debug\FX.HuZ.WebApi.Test.pdb
+E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi.Test\obj\Debug\FX.HuZ.WebApi.Test.csprojAssemblyReference.cache
