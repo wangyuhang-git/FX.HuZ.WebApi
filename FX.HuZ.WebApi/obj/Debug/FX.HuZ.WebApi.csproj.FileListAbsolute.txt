@@ -421,4 +421,3 @@ E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi\obj\Debug\FX.HuZ.WebApi.csproj.CoreCompile
 E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi\obj\Debug\FX.HuZ.WebApi.csproj.CopyComplete
 E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi\obj\Debug\FX.HuZ.WebApi.dll
 E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi\obj\Debug\FX.HuZ.WebApi.pdb
-E:\WebApi\FX.HuZ.WebApi\FX.HuZ.WebApi\obj\Debug\FX.HuZ.WebApi.csprojAssemblyReference.cache

@@ -182,6 +182,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Business\DictionaryBusiness.cs" />
     <Compile Include="Business\EnterpriseApp\ProjectEpBusiness.cs" />
     <Compile Include="Business\EnterpriseApp\UserInfoEpBusiness.cs" />
     <Compile Include="Business\Helper.cs" />
@@ -195,6 +196,7 @@
     <Compile Include="Common\WhereHelper.cs" />
     <Compile Include="Controllers\AttendanceReceiveController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
+    <Compile Include="Controllers\DictionaryController.cs" />
     <Compile Include="Controllers\DustNewReceiveController.cs" />
     <Compile Include="Controllers\DustReceiveController.cs" />
     <Compile Include="Controllers\EnterpriseApp\ProjectController.cs" />
